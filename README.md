@@ -7,13 +7,13 @@
 ## Ссылка на репозиторий
 
 Репозиторий доступен по адресу:  
-https://github.com/ElyorKHodjimetov/HelloArch.git
+[GitHub: HelloArch](https://github.com/ElyorKHodjimetov/HelloArch.git)
 
 ---
 
 ## Структура репозитория
 
-```
+```text
 HelloArch/
 ├── CMakeLists.txt       # скрипт сборки CMake
 ├── HelloArch.cpp        # исходник с функцией main()
@@ -22,7 +22,7 @@ HelloArch/
 
 ### Коротко о файлах
 
-- `HelloArch.cpp` — основной исходник.  
+- `HelloArch.cpp` — основной исходник, где определяется архитектура и (для Raspberry Pi) управление ACT-LED.  
 - `CMakeLists.txt` — конфигурация CMake (сборка без зависимости от IDE).  
 - `.gitignore` — исключает из репозитория артефакты сборки (папки `build/`, `CMakeCache.txt`, `.exe`, `.obj` и др.).
 
@@ -33,10 +33,12 @@ HelloArch/
 - **Windows**:
   - Visual Studio 2022 (или любая версия, поддерживающая CMake).  
   - CMake ≥ 3.5, установлен в PATH (в VS 2022 CMake уже встроен).  
+  - Проект настроен для стандарта C++17.
 
 - **Linux / Raspberry Pi (Debian/Ubuntu)**:
   - `g++` / `clang++` (пакет `build-essential`).  
   - `cmake` (пакет `cmake`).  
+  - Для управления ACT-LED требуются права `root` (или соответствующие udev-правила).
 
 Под Raspberry Pi (Raspbian OS):
 ```bash
@@ -85,6 +87,8 @@ sudo apt install -y build-essential cmake
 
 ### Windows (через встроенный терминал CMake)
 
+**Примечание:** при генерации с генератором Visual Studio переменная `CMAKE_BUILD_TYPE` игнорируется. Конфигурацию (Release или Debug) нужно указывать при сборке через параметр `--config`, а не в `cmake ..`.
+
 1. **Перейдите в корень проекта**:
    ```powershell
    cd D:\путь\до\HelloArch
@@ -96,13 +100,13 @@ sudo apt install -y build-essential cmake
    cd build
    ```
 
-3. **Сгенерируйте файлы сборки**:
+3. **Сгенерируйте файлы сборки (Release)**:
    ```powershell
-   cmake .. -DCMAKE_BUILD_TYPE=Release
+   cmake ..
    ```
    Visual Studio найдёт генератор и создаст `.sln` и прочие файлы.
 
-4. **Соберите**:
+4. **Соберите (Release)**:
    ```powershell
    cmake --build . --config Release
    ```
@@ -113,6 +117,9 @@ sudo apt install -y build-essential cmake
    cd Release
    .\HelloArch.exe
    ```
+   — вывод аналогичен предыдущему (`Hello from x86_64 (Windows)`).
+
+*Если нужна Debug-версия, выполните `cmake --build . --config Debug`, тогда бинарник окажется в `build\Debug\HelloArch.exe`.*
 
 ---
 
@@ -137,7 +144,7 @@ sudo apt install -y build-essential cmake
    cd build
    ```
 
-4. **Сгенерируйте сборку через CMake**:
+4. **Сгенерируйте сборку через CMake (Release)**:
    ```bash
    cmake .. -DCMAKE_BUILD_TYPE=Release
    ```
@@ -154,7 +161,7 @@ sudo apt install -y build-essential cmake
    ```
    — появится исполняемый файл `HelloArch` в папке `build`.
 
-6. **Запустите** (с правами `sudo`, чтобы управлять ACT-LED):
+6. **Запустите (с правами `sudo`, чтобы управлять ACT-LED)**:
    ```bash
    sudo ./HelloArch
    ```
@@ -166,25 +173,25 @@ sudo apt install -y build-essential cmake
    ```
    — и ACT-LED будет мигать.
 
-7. **Верните ACT-LED в стандартный режим** (после остановки):
+7. **Верните ACT-LED в стандартный режим (после остановки)**:
    ```bash
    echo mmc0 | sudo tee /sys/class/leds/ACT/trigger
    ```
 
 ---
 
-## Структура после клона
+## Структура после сборки
 
-```
+```text
 HelloArch/
 ├── .gitignore
 ├── CMakeLists.txt
 ├── HelloArch.cpp
-└── build/                # создаётся при сборке, в репо отсутствует
-    ├── (CMakeFiles и пр.)
-    └── Release/           # Windows-бинарник
-        └── HelloArch.exe
-    └── HelloArch          # Linux-бинарник
+└── build/                   # создаётся при сборке, в репо отсутствует
+    ├── CMakeFiles/
+    ├── Release/
+    │   └── HelloArch.exe    # Windows-бинарник
+    └── HelloArch            # Linux-бинарник
 ```
 
 ---
@@ -197,4 +204,5 @@ HelloArch/
 
 ## Лицензия
 
-Проект распространяется под лицензией MIT (или укажите свою предпочитаемую).
+Проект распространяется под лицензией MIT.  
+Полный текст лицензии см. в файле [LICENSE](./LICENSE).
